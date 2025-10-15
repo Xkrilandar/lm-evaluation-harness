@@ -1,0 +1,19 @@
+task: medxpertqa
+dataset_path: TsinghuaC3I/MedXpertQA
+output_type: multiple_choice
+dataset_name: Text
+training_split: dev
+validation_split: test
+test_split: test
+doc_to_text: "{{question}} (A) {{options['A']}} (B) {{options['B']}} (C) {{options['C']}} (D) {{options['D']}} (E) {{options['E']}} (F) {{options['F']}} (G) {{options['G']}} (H) {{options['H']}} (I) {{options['I']}} (J) {{options['J']}}"
+doc_to_target: label
+doc_to_choice: [ 'A','B','C','D','E','F','G','H','I','J' ]
+should_decontaminate: true
+doc_to_decontamination_query: "{{question}}"
+metric_list:
+  - metric: acc
+    aggregation: mean
+    higher_is_better: true
+  - metric: acc_norm
+    aggregation: mean
+    higher_is_better: true

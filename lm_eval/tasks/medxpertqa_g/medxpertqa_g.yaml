@@ -1,0 +1,33 @@
+task: medxpertqa_g
+dataset_path: TsinghuaC3I/MedXpertQA
+output_type: generate_until
+dataset_name: Text
+training_split: dev
+validation_split: test
+test_split: test
+# doc_to_text: !function utils_medmcqa.doc_to_text
+doc_to_text: "{{question}} (A) {{options['A']}} (B) {{options['B']}} (C) {{options['C']}} (D) {{options['D']}} (E) {{options['E']}} (F) {{options['F']}} (G) {{options['G']}} (H) {{options['H']}} (I) {{options['I']}} (J) {{options['J']}}. Provide the final answer enclosed in boxed{the_answer}."
+doc_to_target: "{{label}}"
+# doc_to_choice: [ 'A','B','C','D' ]
+filter_list:
+  - name: "strict-match"
+    filter:
+      - function: "regex"
+        regex_pattern: (?i)answer\W(?:is)*\W*([A-D])(?:\W|$)|(?:answer|boxed)?{\W*([A-D])\W+
+      - function: "take_first"
+generation_kwargs:
+  until:
+    - "</s>"
+    - "Q:"
+    - "<|im_end|>"
+    - "<|end_of_text|>"
+  do_sample: false
+  temperature: 0.0
+should_decontaminate: true
+doc_to_decontamination_query: "{{question}}"
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: true
