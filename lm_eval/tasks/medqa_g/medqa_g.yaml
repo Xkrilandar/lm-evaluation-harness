@@ -25,7 +25,7 @@ filter_list:
     filter:
       - function: regex
         # capture A–D from e.g. "Final Answer:(C)" or "Final Answer: ( C )"
-        regex_pattern: "Final Answer:\\s*\\(([A-D])\\)"
+        regex_pattern: '(?i)Answer[^A-D]*(?::)*[^A-D]*(?:boxed)*[^A-D]*([A-D])\b'
       - function: "take_first"
 
 metric_list:
