@@ -1,0 +1,9 @@
+group: medbench_no_cot
+task:
+  - pubmedqa_g_no_cot
+  - medmcqa_g_no_cot
+  - medqa_g_no_cot
+aggregate_metric_list:
+  - metric: acc
+    aggregation: mean
+    weight_by_size: True

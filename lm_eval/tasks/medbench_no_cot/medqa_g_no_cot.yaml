@@ -1,0 +1,32 @@
+task: medqa_g_no_cot
+dataset_path: GBaker/MedQA-USMLE-4-options-hf
+
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: test
+doc_to_text: "Question: {{sent1}} (A) {{ending0}} (B) {{ending1}} (C) {{ending2}} (D) {{ending3}}\n Provide the final answer enclosed in boxed{the_answer}."
+doc_to_target: "{{['A', 'B', 'C', 'D'][label]}}"
+generation_kwargs:
+  until:
+    - "</s>"
+    - "Q:"
+    - "<|im_end|>"
+    - "<|end_of_text|>"
+  do_sample: false
+  temperature: 0.0
+  top_p: 1.0
+  
+filter_list:
+  - name: strict-final-answer
+    filter:
+      - function: regex
+        regex_pattern: '(?i)Answer[^A-D]*(?::)*[^A-D]*(?:boxed)*[^A-D]*([A-D])\b'
+      - function: "take_first"
+
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: true
