@@ -1,0 +1,36 @@
+task: medqa_g
+dataset_path: GBaker/MedQA-USMLE-4-options-hf
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: test
+#doc_to_text: !function preprocess_medqa.doc_to_text
+#doc_to_text: "{{sent1}} (A) {{ending0}} (B) {{ending1}} (C) {{ending2}} (D) {{ending3}} \n Provide the final answer in boxed{(A,B,C,D}."
+doc_to_text: "Instructions: The following are multiple choice questions about medical knowledge. Solve them in a step-by-step fashion, starting by summarizing the available information. Output a single option from the four options as the final answer.\n\n Question: {{sent1}} (A) {{ending0}} (B) {{ending1}} (C) {{ending2}} (D) {{ending3}}\n Response (think step by step and then end with 'Final Answer:' followed by *only* the letter corresponding to the correct answer enclosed in parentheses)"
+doc_to_target: "{{['A', 'B', 'C', 'D'][label]}}" #!function preprocess_medqa.doc_to_target
+# doc_to_choice: [ 'A', 'B', 'C', 'D' ]
+
+generation_kwargs:
+  until:
+    - "</s>"
+    - "Q:"
+    - "<|im_end|>"
+    - "<|end_of_text|>"
+  do_sample: false
+  temperature: 0.0
+  top_p: 1.0
+  
+filter_list:
+  - name: strict-final-answer
+    filter:
+      - function: regex
+        # capture A–D from e.g. "Final Answer:(C)" or "Final Answer: ( C )"
+        regex_pattern: '(?i)Answer[^A-D]*(?::)*[^A-D]*(?:boxed)*[^A-D]*([A-D])\b'
+      - function: "take_first"
+
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: true

@@ -5,7 +5,7 @@ output_type: generate_until
 training_split: train
 validation_split: validation
 test_split: test
-doc_to_text: "Question: {{CONTEXTS}} {{QUESTION.strip()}} (A) Yes (B) No (C) Maybe \n Provide the final answer enclosed in boxed{the_answer}."
+doc_to_text: "Question: {{CONTEXTS}} {{QUESTION.strip()}} (A) Yes (B) No (C) Maybe \n Response (end with 'Final Answer:' followed by *only* the letter corresponding to the correct answer enclosed in parentheses)"
 doc_to_target: '{{ {"yes":"A","no":"B","maybe":"C"}[final_decision] }}'
 generation_kwargs:
   until:

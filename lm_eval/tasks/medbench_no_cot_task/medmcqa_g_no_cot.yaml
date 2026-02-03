@@ -1,12 +1,12 @@
-task: medqa_g_no_cot
-dataset_path: GBaker/MedQA-USMLE-4-options-hf
+task: medmcqa_g_no_cot
+dataset_path: openlifescienceai/medmcqa
 
 output_type: generate_until
 training_split: train
 validation_split: validation
-test_split: test
-doc_to_text: "Question: {{sent1}} (A) {{ending0}} (B) {{ending1}} (C) {{ending2}} (D) {{ending3}}\n Provide the final answer enclosed in boxed{the_answer}."
-doc_to_target: "{{['A', 'B', 'C', 'D'][label]}}"
+test_split: validation
+doc_to_text: "Question: {{question}}\n (A) {{opa}} (B) {{opb}} (C) {{opc}} (D) {{opd}}\n Response (end with 'Final Answer:' followed by *only* the letter corresponding to the correct answer enclosed in parentheses)"
+doc_to_target: "{{['A', 'B', 'C', 'D'][cop]}}"
 generation_kwargs:
   until:
     - "</s>"

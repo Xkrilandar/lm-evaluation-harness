@@ -1,0 +1,38 @@
+task: pubmedqa_g
+dataset_path: bigbio/pubmed_qa
+dataset_name: pubmed_qa_labeled_fold0_source
+output_type: generate_until
+training_split: train
+validation_split: validation
+test_split: test
+#doc_to_text: !function preprocess_pubmedqa.doc_to_text
+
+#doc_to_text: "Q: {{QUESTION.strip()}} (Yes) (No) (Maybe)\nA: Provide the final answer enclosed in boxed{the_answer}."
+doc_to_text: "Instructions: The following are multiple choice questions about medical knowledge. Solve them in a step-by-step fashion, starting by summarizing the available information. Output a single option from the three options as the final answer.\n\n Question: {{CONTEXTS}} {{QUESTION.strip()}} (A) Yes (B) No (C) Maybe \n Response (think step by step and then end with 'Final Answer:' followed by *only* the letter corresponding to the correct answer enclosed in parentheses)"
+doc_to_target: '{{ {"yes":"A","no":"B","maybe":"C"}[final_decision] }}'
+# doc_to_choice: ["yes", "no", "maybe"]
+
+generation_kwargs:
+  until:
+    - "</s>"
+    - "Q:"
+    - "<|im_end|>"
+    - "<|end_of_text|>"
+  do_sample: false
+  temperature: 0.0
+  top_p: 1.0
+  
+filter_list:
+  - name: strict-final-answer
+    filter:
+      - function: regex
+        # capture A–C from e.g. "Final Answer:(C)" or "Final Answer: ( C )"
+        regex_pattern: '(?i)Answer[^A-D]*(?::)*[^A-D]*(?:boxed)*[^A-D]*([A-D])\b'
+      - function: "take_first"
+
+metric_list:
+  - metric: exact_match
+    aggregation: mean
+    higher_is_better: true
+    ignore_case: true
+    ignore_punctuation: true
