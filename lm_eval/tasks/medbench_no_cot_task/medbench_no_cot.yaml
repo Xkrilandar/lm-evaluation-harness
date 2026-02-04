@@ -4,6 +4,6 @@ task:
   - medmcqa_g_no_cot
   - medqa_g_no_cot
 aggregate_metric_list:
-  - metric: acc
+  - metric: exact_match
     aggregation: mean
     weight_by_size: True
