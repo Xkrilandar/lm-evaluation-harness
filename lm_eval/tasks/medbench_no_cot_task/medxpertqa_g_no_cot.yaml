@@ -5,10 +5,8 @@ output_type: generate_until
 training_split: dev
 validation_split: test
 test_split: test
-doc_to_text: "{{question}} (A) {{options['A']}} (B) {{options['B']}} (C) {{options['C']}} (D) {{options['D']}} (E) {{options['E']}} (F) {{options['F']}} (G) {{options['G']}} (H) {{options['H']}} (I) {{options['I']}} (J) {{options['J']}}. Provide the final answer enclosed in boxed{the_answer}."
+doc_to_text: "Question: {{question}} (A) {{options['A']}} (B) {{options['B']}} (C) {{options['C']}} (D) {{options['D']}} (E) {{options['E']}} (F) {{options['F']}} (G) {{options['G']}} (H) {{options['H']}} (I) {{options['I']}} (J) {{options['J']}}\n Response (end with 'Final Answer:' followed by *only* the letter corresponding to the correct answer enclosed in parentheses)"
 doc_to_target: "{{label}}"
-# doc_to_choice: [ 'A','B','C','D' ]
-
 generation_kwargs:
   until:
     - "</s>"
@@ -18,14 +16,12 @@ generation_kwargs:
   do_sample: false
   temperature: 0.0
   top_p: 1.0
-
 filter_list:
   - name: strict-final-answer
     filter:
       - function: regex
         regex_pattern: '(?i)Answer[^A-J]*(?::)*[^A-J]*(?:boxed)*[^A-J]*([A-J])\b'
       - function: "take_first"
-
 metric_list:
   - metric: exact_match
     aggregation: mean

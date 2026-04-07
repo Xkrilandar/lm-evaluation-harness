@@ -1,10 +1,11 @@
-group: medbench_no_cot
+group: medbench
 task:
-  - pubmedqa_g_no_cot
-  - medmcqa_g_no_cot
-  - medqa_g_no_cot
-  - medxpertqa_g_no_cot
+  - pubmedqa_g
+  - medmcqa_g
+  - medqa_g
+  - medxpertqa_g
   - mmlu_pro
+  - ifeval
 aggregate_metric_list:
   - metric: exact_match
     aggregation: mean

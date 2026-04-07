@@ -13,7 +13,7 @@ filter_list:
   - name: "strict-match"
     filter:
       - function: "regex"
-        regex_pattern: (?i)answer\W(?:is)*\W*([A-D])(?:\W|$)|(?:answer|boxed)?{\W*([A-D])\W+
+        regex_pattern: (?i)answer\W(?:is)*\W*([A-J])(?:\W|$)|(?:answer|boxed)?{\W*([A-J])\W+
       - function: "take_first"
 generation_kwargs:
   until:
