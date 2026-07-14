@@ -6,6 +6,7 @@ task:
   - medxpertqa_g
   - mmlu_pro
   - ifeval
+  - ai2_arc
 aggregate_metric_list:
   - metric: exact_match
     aggregation: mean
