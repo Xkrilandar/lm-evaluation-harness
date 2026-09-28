@@ -23,7 +23,11 @@ filter_list:
   - name: strict-final-answer
     filter:
       - function: regex
-        regex_pattern: '(?i)Answer[^A-J]*(?::)*[^A-J]*(?:boxed)*[^A-J]*([A-J])\b'
+        # last "Final Answer:(X)", "The answer is X" or \boxed{X}, capital letter only.
+        # The old (?i)Answer[^A-J]* pattern stopped at the "i" of "is" and never
+        # parsed "The answer is X", and it took lowercase letters out of words.
+        regex_pattern: '(?:[Aa]nswer(?:\s+is)?|ANSWER(?:\s+IS)?|boxed\{)[\s:*(\[{$\\]*([A-J])(?![A-Za-z0-9])'
+        group_select: -1
       - function: "take_first"
 
 metric_list:
